@@ -1,3 +1,7 @@
+import { Update } from "./updateQueue"
+import { scheduleRoot,useReducer,useState } from "./scheduler"
+
+
 const { TEXT_ELEMENT } = require("./constants")
 
 
@@ -22,10 +26,28 @@ function createElement (type, config, ...children) {
         }
     }
 }
-    const React = {
-        createElement
+
+class Component {
+    constructor(props){
+        this.props = props
     }
-    export {
-        createElement
+    setState(payload){
+        let update = new Update(payload)
+        this.internalFiber.updateQueue.enqueueUpdate(update)
+        scheduleRoot()
     }
-    export default React
+}
+Component.prototype.isReactComponent = {}
+const React = {
+    createElement,
+    Component,
+    useReducer,
+    useState
+}
+export {
+    createElement,
+    Component,
+    useReducer,
+    useState
+}
+export default React
